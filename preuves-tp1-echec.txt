@@ -1,0 +1,56 @@
+===== PIPELINE EN ECHEC (TAUX_TVA=0.18) =====
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-8.3.4, pluggy-1.7.0 -- C:\Users\moham\Desktop\ISI\devops\tp-devops\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\moham\Desktop\ISI\devops\tp-devops
+configfile: pytest.ini
+plugins: anyio-4.16.0, cov-6.0.0
+collecting ... collected 8 items
+
+tests/test_api.py::test_health PASSED                                    [ 12%]
+tests/test_api.py::test_creer_puis_lire_un_produit FAILED                [ 25%]
+tests/test_api.py::test_produit_inexistant PASSED                        [ 37%]
+tests/test_api.py::test_prix_negatif_refuse PASSED                       [ 50%]
+tests/test_calculs.py::test_tva_sur_100_dinars FAILED                    [ 62%]
+tests/test_calculs.py::test_prix_ttc FAILED                              [ 75%]
+tests/test_calculs.py::test_remise_de_10_pourcent PASSED                 [ 87%]
+tests/test_calculs.py::test_montant_negatif_refuse PASSED                [100%]
+
+================================== FAILURES ===================================
+_______________________ test_creer_puis_lire_un_produit _______________________
+
+    def test_creer_puis_lire_un_produit():
+        cree = client.post("/produits", json={"nom": "Clavier", "prix_ht": 50, "stock": 3})
+        assert cree.status_code == 201
+        produit = cree.json()
+>       assert produit["prix_ttc"] == 59.5
+E       assert 59.0 == 59.5
+
+tests\test_api.py:21: AssertionError
+___________________________ test_tva_sur_100_dinars ___________________________
+
+    def test_tva_sur_100_dinars():
+>       assert calculer_tva(100) == 19.0          # l'exemple du cours
+E       assert 18.0 == 19.0
+E        +  where 18.0 = calculer_tva(100)
+
+tests\test_calculs.py:8: AssertionError
+________________________________ test_prix_ttc ________________________________
+
+    def test_prix_ttc():
+>       assert prix_ttc(200) == 238.0
+E       assert 236.0 == 238.0
+E        +  where 236.0 = prix_ttc(200)
+
+tests\test_calculs.py:12: AssertionError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\starlette\testclient.py:40
+  C:\Users\moham\Desktop\ISI\devops\tp-devops\.venv\Lib\site-packages\starlette\testclient.py:40: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_api.py::test_creer_puis_lire_un_produit - assert 59.0 == 59.5
+FAILED tests/test_calculs.py::test_tva_sur_100_dinars - assert 18.0 == 19.0
+FAILED tests/test_calculs.py::test_prix_ttc - assert 236.0 == 238.0
+=================== 3 failed, 5 passed, 1 warning in 0.67s ====================

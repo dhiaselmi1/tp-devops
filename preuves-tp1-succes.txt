@@ -1,0 +1,37 @@
+===== PIPELINE CORRIGE (TAUX_TVA=0.19) =====
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-8.3.4, pluggy-1.7.0 -- C:\Users\moham\Desktop\ISI\devops\tp-devops\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\moham\Desktop\ISI\devops\tp-devops
+configfile: pytest.ini
+plugins: anyio-4.16.0, cov-6.0.0
+collecting ... collected 8 items
+
+tests/test_api.py::test_health PASSED                                    [ 12%]
+tests/test_api.py::test_creer_puis_lire_un_produit PASSED                [ 25%]
+tests/test_api.py::test_produit_inexistant PASSED                        [ 37%]
+tests/test_api.py::test_prix_negatif_refuse PASSED                       [ 50%]
+tests/test_calculs.py::test_tva_sur_100_dinars PASSED                    [ 62%]
+tests/test_calculs.py::test_prix_ttc PASSED                              [ 75%]
+tests/test_calculs.py::test_remise_de_10_pourcent PASSED                 [ 87%]
+tests/test_calculs.py::test_montant_negatif_refuse PASSED                [100%]
+
+============================== warnings summary ===============================
+.venv\Lib\site-packages\starlette\testclient.py:40
+  C:\Users\moham\Desktop\ISI\devops\tp-devops\.venv\Lib\site-packages\starlette\testclient.py:40: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.12.10-final-0 ----------
+Name              Stmts   Miss  Cover   Missing
+-----------------------------------------------
+app\__init__.py       0      0   100%
+app\calculs.py       11      1    91%   21
+app\database.py      19      0   100%
+app\main.py          38      2    95%   34, 46
+-----------------------------------------------
+TOTAL                68      3    96%
+
+======================== 8 passed, 1 warning in 1.17s =========================
+flake8: aucune erreur
