@@ -1,0 +1,43 @@
+# Pipeline CI/CD du TP 1 — fichier .github/workflows/ci.yml
+name: CI                                  # nom affiché dans l'onglet « Actions »
+on:                                       # QUAND le pipeline se déclenche
+  push:
+    branches: [main]                      # à chaque push sur main
+  pull_request:
+    branches: [main]                      # à chaque Pull Request visant main
+  workflow_dispatch:                      # + bouton « Run workflow » (lancement manuel)
+
+jobs:
+  # ---------------------------------------------------------------- job 1 : intégration continue
+  test:
+    name: Lint et tests
+    runs-on: ubuntu-latest                # machine virtuelle neuve fournie par GitHub
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4         # clone le dépôt dans la machine virtuelle
+      - name: Installer Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'          # entre guillemets ! (sinon 3.10 serait lu 3.1)
+          cache: pip                      # réutilise les paquets d'une exécution à l'autre
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt
+      - name: Analyse statique (flake8)
+        run: flake8 app/ tests/ --max-line-length=120
+      - name: Tests unitaires et d'intégration
+        run: pytest tests/ -v --cov=app --cov-report=term-missing
+
+  # ---------------------------------------------------------------- job 2 : déploiement continu
+  deploy:
+    name: Déploiement staging
+    needs: test                           # ne démarre QUE si le job « test » a réussi
+    if: github.ref == 'refs/heads/main'   # seulement sur main (jamais pour une Pull Request)
+    runs-on: ubuntu-latest
+    environment: staging                  # environnement visible dans GitHub (historique)
+    steps:
+      - uses: actions/checkout@v4
+      - name: Simuler un déploiement
+        run: |
+          echo "Déploiement de la version ${{ github.sha }} vers l'environnement de staging..."
+          echo "Auteur du commit : ${{ github.actor }}"
+          echo "Déploiement terminé."

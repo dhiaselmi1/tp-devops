@@ -1,0 +1,53 @@
+# =====================================================================
+# k8s/deployment.yaml — TP 3 : l'API Catalogue sur Kubernetes
+# =====================================================================
+# 1) Deployment : l'ÉTAT DÉSIRÉ — « je veux toujours 3 pods de l'image tp-api:1.0 »
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tp-api
+  labels:
+    app: tp-api
+spec:
+  replicas: 3                         # nombre de pods maintenus en permanence
+  selector:
+    matchLabels:
+      app: tp-api                     # le Deployment gère les pods qui portent ce label...
+  template:                           # ...et voici le MODÈLE de ces pods
+    metadata:
+      labels:
+        app: tp-api                   # ...donc ce label doit être IDENTIQUE au selector
+    spec:
+      containers:
+        - name: tp-api
+          image: tp-api:1.0           # l'image construite au TP 2
+          imagePullPolicy: IfNotPresent   # image chargée dans Minikube : ne pas la chercher sur Docker Hub
+          ports:
+            - containerPort: 8000     # port écouté par uvicorn
+          env:
+            - name: APP_VERSION       # affichée par GET / (utile pour suivre une mise à jour)
+              value: "1.0.0"
+          readinessProbe:             # le pod ne reçoit du trafic qu'une fois PRÊT
+            httpGet: { path: /health, port: 8000 }
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:              # Kubernetes redémarre le conteneur s'il ne répond plus
+            httpGet: { path: /health, port: 8000 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:                  # réservation et plafond (indispensables pour l'autoscaling)
+            requests: { cpu: 100m, memory: 128Mi }
+            limits:   { cpu: 500m, memory: 256Mi }
+---
+# 2) Service : adresse STABLE qui répartit le trafic entre les pods « app: tp-api »
+apiVersion: v1
+kind: Service
+metadata:
+  name: tp-api-service
+spec:
+  type: LoadBalancer                  # sur Minikube : exposé avec « minikube service » ou « minikube tunnel »
+  selector:
+    app: tp-api                       # cible : tous les pods portant ce label
+  ports:
+    - port: 80                        # port du Service
+      targetPort: 8000                # port du conteneur

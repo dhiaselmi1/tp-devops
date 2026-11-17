@@ -1,0 +1,30 @@
+# docker-compose.yml — l'API et sa base PostgreSQL démarrent ensemble
+services:
+  api:                                  # service 1 : notre API
+    build: .                            # construit l'image à partir du Dockerfile du dossier courant
+    image: tp-api:1.0                   # nom donné à l'image construite (réutilisé au TP 3)
+    ports:
+      - "8000:8000"                     # port de l'HÔTE : port du CONTENEUR
+    environment:
+      # « db » = nom du service ci-dessous : Compose fournit un DNS interne entre conteneurs
+      - DATABASE_URL=postgresql://user:pass@db:5432/appdb
+    depends_on:
+      db:
+        condition: service_healthy      # attend que PostgreSQL soit PRÊT, pas seulement démarré
+    restart: unless-stopped             # redémarre l'API si elle plante
+  db:                                   # service 2 : la base de données
+    image: postgres:15                  # image officielle, téléchargée depuis Docker Hub
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass          # TP uniquement : en vrai, utiliser un fichier .env non versionné
+      - POSTGRES_DB=appdb
+    volumes:
+      - db_data:/var/lib/postgresql/data   # les données survivent à la suppression du conteneur
+    healthcheck:                        # Compose teste la base toutes les 5 s
+      test: ["CMD-SHELL", "pg_isready -U user -d appdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  db_data:                              # volume nommé, géré par Docker

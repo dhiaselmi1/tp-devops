@@ -1,0 +1,10 @@
+# Dépendances de l'application (versions figées : même résultat sur tous les postes et dans la CI)
+fastapi==0.115.6           # framework web de l'API REST
+uvicorn[standard]==0.32.1  # serveur ASGI qui exécute l'API
+sqlalchemy==2.0.36         # accès à la base (ORM)
+psycopg2-binary==2.9.10    # pilote PostgreSQL (utilisé au TP2)
+# Outils de qualité utilisés par la CI
+httpx==0.28.1              # requis par le TestClient de FastAPI
+pytest==8.3.4              # tests automatisés
+pytest-cov==6.0.0          # mesure de couverture de code
+flake8==7.1.1              # analyse statique (style, erreurs)

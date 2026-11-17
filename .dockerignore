@@ -1,0 +1,10 @@
+# Fichiers à NE PAS envoyer au moteur Docker (image plus petite, build plus rapide, pas de secrets)
+.git
+.github
+.venv
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db
+k8s/
+.env
