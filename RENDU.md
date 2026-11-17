@@ -2,6 +2,8 @@
 
 Dépôt fil rouge : API Catalogue (FastAPI). Ce document regroupe les livrables des TP 1, 2 et 3.
 
+**Dépôt GitHub :** https://github.com/dhiaselmi1/tp-devops
+
 ## TP 1 — Pipeline CI/CD avec GitHub Actions
 
 **Livrable 1 — pipeline en succès (8 tests + flake8 verts)** : voir `preuves-tp1-succes.txt`
