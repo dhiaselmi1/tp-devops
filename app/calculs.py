@@ -1,6 +1,6 @@
 """Règles métier pures (sans base ni réseau) : idéales pour des tests unitaires rapides."""
 
-TAUX_TVA = 0.19  # taux de TVA normal appliqué dans le TP
+TAUX_TVA = 0.18  # ERREUR VOLONTAIRE : le bon taux est 0.19
 
 
 def calculer_tva(montant_ht: float, taux: float = TAUX_TVA) -> float:
