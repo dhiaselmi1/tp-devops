@@ -129,7 +129,15 @@ tp-api-55bf9cc56d-tggbm   1/1     Running   0          51s
 **Bonus réalisés** : rolling update (`APP_VERSION=2.0.0`) suivi d'un `kubectl rollout undo`
 (retour à la révision 1, succès confirmé par `deployment "tp-api" successfully rolled out`), et
 Horizontal Pod Autoscaler (`kubectl autoscale --cpu-percent=70 --min=2 --max=10`, addon
-`metrics-server` activé).
+`metrics-server` activé) :
+```
+$ kubectl get hpa
+NAME     REFERENCE           TARGETS       MINPODS   MAXPODS   REPLICAS
+tp-api   Deployment/tp-api   cpu: 2%/70%   2         10        2
+```
+Avec une charge CPU réelle de 2 % (bien sous le seuil de 70 %), le HPA a lui-même redescendu le
+nombre de réplicas de 5 à son minimum déclaré (2), preuve que la boucle d'autoscaling fonctionne
+dans les deux sens (montée et descente), pas seulement à la hausse.
 
 Répartition de charge observée via `minikube service tp-api-service --url` : six requêtes
 successives sur `/` renvoient des champs `hote` différents (`brmwk`, `r64lh`, `tggbm`), confirmant
