@@ -7,9 +7,13 @@ Dépôt fil rouge : API Catalogue (FastAPI). Ce document regroupe les livrables 
 **Livrable 1 — pipeline en succès (8 tests + flake8 verts)** : voir `preuves-tp1-succes.txt`
 (commit `6efbcfe` « Correction du taux de TVA »), 8 passed, couverture 96 %.
 
+[CAPTURE:tp1-pytest-succes.png|Exécution locale des 8 tests — tous verts, couverture 96 %]
+
 **Livrable 2 — pipeline en échec** : voir `preuves-tp1-echec.txt`
 (commit `0b42b58` « Mise à jour du taux de TVA »). 3 tests échouent :
 `assert 18.0 == 19.0`, `assert 236.0 == 238.0`, `assert 59.0 == 59.5`.
+
+[CAPTURE:tp1-pytest-echec.png|Pipeline en échec après introduction du bug (TAUX_TVA=0.18) — 3 failed, 5 passed]
 
 **Livrable 3 — `.github/workflows/ci.yml` final commenté** : voir le fichier dans le dépôt.
 Historique Git : vert (`2ff8ae7`) → rouge (`0b42b58`) → vert (`6efbcfe`), exactement la séquence
@@ -65,6 +69,10 @@ Persistance vérifiée : après `docker compose down` (sans `-v`) puis `docker c
 produit « Clavier » est toujours présent dans `GET /produits`. Après `docker compose down -v`, le
 volume `db_data` est supprimé.
 
+[CAPTURE:tp2-docker-desktop.png|Docker Desktop — pile tp-devops : conteneurs api-1 (tp-api:1.0, port 8000) et db-1 (postgres:15) en cours d'exécution]
+
+[CAPTURE:tp1-swagger-api.png|Documentation interactive Swagger de l'API (http://localhost:8000/docs)]
+
 **Livrable 4 — Réponses aux questions de compréhension**
 
 1. `docker stop` arrête le conteneur (il existe toujours, visible avec `docker ps -a`) ;
@@ -112,6 +120,8 @@ Events:
   Normal  ScalingReplicaSet  41s   deployment-controller  Scaled up replica set tp-api-55bf9cc56d from 0 to 3
 ```
 
+[CAPTURE:tp3-self-healing.png|Suppression manuelle d'un pod puis recréation automatique (nouveau pod, 7 s d'âge)]
+
 **Livrable 3 — mise à l'échelle à 5 réplicas** :
 ```
 $ kubectl scale deployment tp-api --replicas=5
@@ -142,6 +152,8 @@ dans les deux sens (montée et descente), pas seulement à la hausse.
 Répartition de charge observée via `minikube service tp-api-service --url` : six requêtes
 successives sur `/` renvoient des champs `hote` différents (`brmwk`, `r64lh`, `tggbm`), confirmant
 que le Service répartit le trafic entre les pods.
+
+[CAPTURE:tp3-kubectl-pods.png|État réel du cluster : pods, Deployment, HPA (REPLICAS: 3) et Service LoadBalancer]
 
 **Livrable 4 — Réponses aux questions de compréhension**
 
